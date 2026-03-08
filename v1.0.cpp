@@ -315,4 +315,5 @@ int main() {
     Kingdom game;
     game.startGame();
     return 0;
+
 }
