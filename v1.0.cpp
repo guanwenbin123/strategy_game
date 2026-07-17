@@ -11,7 +11,7 @@ class aa{
             int bb_W;
             int bb_I;
             int bb_S;
-            int bb_
+            int bb_G
         }
         void cc(){
             cout << " " <<;
