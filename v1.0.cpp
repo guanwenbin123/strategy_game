@@ -2,80 +2,99 @@
 #include <string>
 #include <cstdlib>
 #include <windows.h>
+#include <conio.h>
 using namespace std;
 
-class Game {
+class during_university{
 public:
-    int turn; // 回合数
-
-    struct Resources {
-        int Groschen;   // 钱
-        int population; // 人口
-        int food;       // 食物
-        int timber;     // 木头
-        int iron;       // 铁
-        int stone;      // 石头
-        int steel;      // 钢
-        int silver;     // 银
-    } res;//创建对象
-
-    // 构造函数
-    Game() {
-        turn = 1;
-        res.Groschen = 100000;
-        res.population = 1000;
-        res.food = 1000;
-        res.timber = 500;
-        res.iron = 200;
-        res.stone = 500;
-        res.steel = 0;
-        res.silver = 0;
-    }
-
-    // 回合函数
-    void showStatus() {
-        system("cls");
-        cout << "第 " << turn << " 回合" << endl;
-        cout << "钱：" << res.Groschen << endl;
-        cout << "人口：" << res.population << endl;
-        cout << "食物：" << res.food << endl;
-        cout << "木头：" << res.timber << endl;
-        cout << "铁：" << res.iron << endl;
-        cout << "石头：" << res.stone << endl;
-        cout << "钢：" << res.steel << endl;
-        cout << "银：" << res.silver << endl;
-    }
-
-    // 游戏开场剧情
-    void Opening_scene() {
-        system("cls");
-        cout << "1435年的波西米亚，胡斯战争已经打了十五年。去年，圣杯派的贵族和城市联军在利帕尼战场消灭了激进的塔博尔派主力。战争虽然还没正式结束，但最激烈的流血已经停了。\n";
-        system("pause");
-        system("cls");
-
-        cout << "现在的波西米亚处于一种微妙的平衡状态。作为妥协，圣杯派信徒获准领受圣杯，但教皇拒绝承认这一协定。西吉斯蒙德虽然是名义上的国王，但他还在和帝国扯皮，并不常驻布拉格。真正的权力掌握在由贵族和城市议员组成的议会手中。\n";
-        system("pause");
-        system("cls");
-
-        cout << "你今年十五岁，是查理大学文学院的学生。你的父亲是乡下的圣杯派乡绅，靠着在战争中站队正确，保住了那点微薄的领地。小时候为了躲避战火，你被送进布拉格，在那之后就没怎么回过家。\n";
-        system("pause");
-        system("cls");
-
-        cout << "现在的你，每天穿梭在布拉格的石板路和大学回廊里。身边是还没散尽的硝烟味，以及这座城市在战后试图重建秩序的嘈杂声。你的父亲来信，希望你多学些法律和神学，将来好回去守住家族的根基。但在这座城市里，关于信仰、法律和权力的争论，远比课本上要复杂。\n";
-        system("pause");
-        system("cls");
-    }
-};
-
-class character{
+    int turn_number; // 回合数
+    int choice;
+    int groschen;    //钱
     struct player_attribute{
-        
+        int satiety_value;//饱腹值
+        int mood;//心情
+        int health;//健康
+        int academic;//学识
+        int finance;//财政
+        int Military;//军事
     } pla_a;
     struct npc_attribute{
+        int Favorability;
+    } ;
+    // 物品类型枚举
+    enum ItemType {
+        FOOD,       // 食物（可吃，加饱腹/心情）
+        BOOK,       // 书籍（学习用，加属性）
+        ATTIRE,    // 装束
+        TOOL,       // 工具
+        VALUABLE,   // 值钱的东西
+        MISC        // 杂物
+    };
+
+    // 狼牙项链
+    struct wolf_tooth{
+        string name;        // 物品名称
+        ItemType type;      // 物品类型
+        string description; // 描述文字
+        int quantity;       // 数量（堆叠用）
+        int storage_location;//储存位置,1:行李 2:背包 3:被装备 0：已使用，交出，失去
+        int passive_bonus;  // 被动加成，装备后所有检定成功率+10%
+    }; wol
+    
+    struct Item {
+        string name;        // 物品名称
+        ItemType type;      // 物品类型
+        string description; // 描述文字
+        int value;          // 效果值（食物的饱腹恢复量 / 书籍的属性加成等）
+        int price;          // 卖价（格罗申）
+        int quantity;       // 数量（堆叠用）
+    };
+    Game() {
+        turn_number = 1;
+        groschen = 100;
+        wol.name = "狼牙项链";
+        wol.type = VALUABLE;
+        wol.description = ""
+    }
+    // 游戏开场剧情
+    void Opening_scene() {
+        cout << "1436年秋，波西米亚。" << endl;
+    cout << "你十六岁，刚刚踏入布拉格查理大学的艺学院。" << endl;
+    cout << "你的名字是Jan z Vlkanova。" << endl;
+    system("pause");
+    system("cls");
+
+    cout << "十四年前你出生时，胡斯被烧死在康斯坦茨。十四年间，这片土地没有一天不在流血。" << endl;
+    cout << "你的父亲——符尔卡诺夫的小领主，带着圣杯派的战旗活过了战争。" << endl;
+    cout << "但他向西吉斯蒙德国王交出的那笔赎金，几乎掏空了城堡下的每一个钱袋。" << endl;
+    system("pause");
+    system("cls");
+
+    cout << "你的母亲来自米兰，一个意大利贵族之女。童年时她带你躲进布拉格，" << endl;
+    cout << "用带着托斯卡纳口音的拉丁语教你读书写字。" << endl;
+    cout << "三天前她回了符尔卡诺夫城堡，临走时只说了一句：\"别跟酒馆里的粗人学坏。\"" << endl;
+    system("pause");
+    system("cls");
+
+    cout << "如今，里潘战役的尸骨已经凉了，塔博尔派退守南方，西吉斯蒙德坐在布拉格的王座上。" << endl;
+    cout << "《伊格劳协定》让圣杯派暂时赢了，但谁都看得出来——这和平撑不了多久。" << endl;
+    cout << "而你，一个穷贵族的儿子，站在这座城市的石厅里，长袍上沾着从乡下带来的尘土。" << endl;
+    cout << "你的大学第一天，开始了。" << endl;
+    system("pause");
+    system("cls");
+    cout << "早上8点，提恩教堂的钟声你从宿舍的稻草垫上叫起来，阳光透过窗户照到你的身上，你撑起身，环顾四周：这间屋子不大，石墙潮得发青，角落里还对着你的行李" << endl;
+    system("pause");
+    system("cls");
+    cout << "按1打开行李" << endl;
+    if(_getch() == 1)
+    }
+    void start_day(){
         
-    } npc_a;
+    }
 };
 int main() {
-    Game game;
+    during_university game1;
     return 0;
 }
+    
+    
