@@ -2,58 +2,70 @@
 #include <string>
 #include <cstdlib>
 #include <windows.h>
-#include <conio.h>
+#include <conio.h>
 #include <vector>
 #include <map>
 using namespace std;
 
 class during_university{
 public:
-    int turn_number; // 回合数
-    int input;
-    int groschen;    //钱
+    int turn_number;                    // 回合数
+    int i_input1;
+    int i_input2;
+    char c_input;
+    int groschen;                       //钱
+    
+    //玩家属性类型定义
     struct player_attribute{
-        int satiety_value;//饱腹值
-        int mood;//心情
-        int health;//健康
-        int academic;//学识.
-        int finance;//财政
-        int Military;//军事
+        int satiety_value;              //饱腹值
+        int mood;                       //心情
+        int health;                     //健康
+        int academic;                   //学识.
+        int finance;                    //财政
+        int Military;                   //军事
     } pla_a;
+    
     struct npc_attribute{
         int Favorability;
     };
+    
     // 物品类型枚举
     enum ItemType {
-        FOOD,       // 食物（可吃，加饱腹/心情)
-        MEDICINE,   // 药水 (可增加学习效率,治病等)
-        BOOK,       // 书籍（学习用，加属性）
-        ATTIRE,     // 装束
-        TOOL,       // 工具
-        VALUABLE,   // 值钱的东西
-        MISC,       // 杂物
-        MATERIAL    // 材料
+        FOOD,                            // 食物
+        MEDICINE,                        // 药水
+        BOOK,                            // 书籍
+        ATTIRE,                          // 装束
+        TOOL,                            // 工具
+        VALUABLE,                        // 值钱的东西
+        MISC,                            // 杂物
+        MATERIAL                         // 材料
     };
+    
     // 物品
     struct food_data{
-        string name;            // 物品名称
-        ItemType type;          // 物品类型
-        string description;    // 描述文字
-        int bag_quantity;       //背包数量
-        int warehouse_quantity;  //行李箱数量
-        int satiety_gain;      //饱腹获得
-        int mood_gain;          //心情获得
-        int health_gain;        //健康获得
-        int shelf_life;           //剩余保质期
+        string name;                    //物品名称
+        ItemType type;                  //物品类型
+        string description;             //描述文字
+        string after_use;               //食用感受
+        int bag_quantity ;              //背包数量
+        int warehouse_quantity;         //行李箱数量
+        int satiety_gain;               //饱腹获得
+        int mood_gain;                  //心情获得
+        int health_gain;                //健康获得
+        int shelf_life;                 //剩余保质期
     };
+    
     struct CraftingRecipe {
-        string result_name;          // 做出来的东西叫啥
-        vector<string> mat_names;    // 需要哪些材料
-        vector<int> mat_counts;      // 每种要几个
-        int required_skill;          // 需要什么技能等级（比如街头智慧 ≥ 5）
-        string skill_type;           // "streetwise" 或 "logic" 等
+        string result_name;             // 做出来的东西叫啥
+        vector<string> mat_names;       // 需要哪些材料
+        vector<int> mat_counts;         // 每种要几个
+        int required_skill;             // 需要什么技能等级（比如街头智慧 ≥ 5）
+        string skill_type;              // "streetwise" 或 "logic" 等
     };
-    vector <food_data> food_storage;
+    
+    vector <food_data> food_storage;//食物
+    
+    
     during_university() {
         turn_number = 1;
         groschen = 100;
@@ -61,10 +73,20 @@ public:
             "黑面包",
             FOOD,
             "制作粗糙的面包,口感不佳,勉强能填饱肚子,是布拉格街头上最常见和最廉价的食物之一",
+            "你掰下一块，硬得像瓦片。放进嘴里嚼了半天，麦壳的粗粝感刮着舌头，酸涩里带点坚果味",
             0,2,
             20,5,0,100
+        });
+        food_storage.push_back({
+            "咸猪肉",
+            FOOD,
+            "腌制,风干过的猪肉条，表面发黄，饿的时候看起来真的很诱人，嗯而且便于储存"
+            "嗯你咬下一口，又咸又腻，但是能给你一种属于穷人的满足感"
+            0,2,
+            15,20,10,80
         })
-    }    
+    }
+    
     // 游戏开场剧情
     void Opening_scene() {
         cout << "1436年秋，波西米亚。" << endl;
@@ -98,9 +120,8 @@ public:
         while(1){
             if(_getch() == '1')break;
         }
-        
-        
     }
+    
     //主界面
     void main_interface(){
         
@@ -109,15 +130,16 @@ public:
     void start_day(){
         
     }
+    
     //仓库函数
     void warehouse(){
         map <int,int> lookup_f;//查看物品映射
         int a = 1,i = 0;
-        char b = 'A';
         system("cls");
         cout << "====================行李==================" << endl;
         cout << "-------------------A.食物---------------------" << endl;
-        for(i = 0;i < in_warehouse_f.size();i++){
+        //显示物品
+        for(i = 0;i < food_storage.size();i++){
             if(food_storage[i].warehouse_quantity != 0){
                 lookup_f[a] = i;
                 cout << "["<< a <<"."<< food_storage[i].name << "×" << food_storage[i].warehouse_quantity <<"]";
@@ -125,29 +147,36 @@ public:
             }
         }
         cout << endl << "请按下你要查看的物品序号种类:";
-        cin >> b;
-        if(input == 'A'){
+        cin >> c_input;
+        if (c_input == 'A' || c_input == 'a'){
             cout << "请选择你要查看的物品:";
-            cin >> input;
+            cin >> i_input1;
+            if (lookup_f.count(i_input1) == 0) return;//检查输入
             system("cls");
             cout << "=========================================" << endl;
-            cout << "名称:" << food_storage[lookup_f[input]].name <<  endl;
-            cout << "数量:" << food_storage[lookup_f[input]].warehouse_quantity << endl;
-            if()
-            cout << food_storage[lookup_f[input]].shelf_life << "回合后腐坏" << endl;
-            cout << food_storage[lookup_f[input]].description << endl;
+            cout << "名称:" << food_storage[lookup_f[i_input1]].name <<  endl;
+            cout << "数量:" << food_storage[lookup_f[i_input1]].warehouse_quantity << endl;
+            cout << food_storage[lookup_f[i_input1]].shelf_life << "回合后腐坏" << endl;
+            cout << food_storage[lookup_f[i_input1]].description << endl;
             cout << "1.取到背包 2.食用 3.丢弃" << endl;
             int a;
             cin >> a;
-            switch(){
-                case 1:food_storage[lookup_f[input]].warehouse_quantity--;
-                       food_storage[lookup_f[input]].bag_quantity++;
-                case 2:pla_a.satiety_value += food_storage[lookup_f[input]].satiety_gain;
-                       pla_a.satiety_value += food_storage[lookup_f[input]].mood_gain;
-                       food_storage[lookup_f[input]].warehouse_quantity--;
-                case 3:food_storage[lookup_f[input]].warehouse_quantity--;
+            if (food_storage[lookup_f[i_input1]].warehouse_quantity > 0){
+                switch(a){
+                    //取到背包
+                    case 1:food_storage[lookup_f[i_input1]].warehouse_quantity--;
+                           food_storage[lookup_f[i_input1]].bag_quantity++;break;
+                    //食用       
+                    case 2:pla_a.satiety_value += food_storage[lookup_f[i_input1]].satiety_gain;
+                           pla_a.mood_value += food_storage[lookup_f[i_input1]].mood_gain;
+                           food_storage[lookup_f[i_input1]].warehouse_quantity--;break;
+                           cout << food_storage[lookup_f[i_input1]].after_use << endl;
+                    //丢弃       
+                    case 3:food_storage[lookup_f[i_input1]].warehouse_quantity--;break;
+                }
             }
-    }
+        }
+    }    
 };
 int main() {
     during_university game1;
