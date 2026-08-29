@@ -48,26 +48,27 @@ public:
     };
 
     // 食物
-    struct food_data {
+    struct food_information {
         string name;                    //物品名称
         ItemType type;                  //物品类型
         string description;             //描述文字
         string after_use;               //食用感受
-        int bag_quantity;               //背包数量
-        int warehouse_quantity;         //行李箱数量
         int satiety_gain;               //饱腹获得
         int mood_gain;                  //心情获得
         int health_gain;                //健康获得
-        int shelf_life;                 //剩余保质期
+        int fresh_time;                 //总新鲜时间
+    };
+    //实例
+    struct food_instance {
+        int remaining_fresh_time;     //剩余新鲜时间
+        int quantity;                 //数量
+		int Item;                     //具体物品索引
     };
     //装束
     struct attire_data {
         string name;                    //物品名称
         ItemType type;                  //物品类型
         string description;             //描述文字
-		int bag_quantity;               //背包数量
-		int warehouse_quantity;         //行李箱数量
-        int 
     };
     //制作
     struct CraftingRecipe {
@@ -76,8 +77,8 @@ public:
         vector<int> mat_counts;         // 每种要几个
 		int skill_required;             // 需要的制作技能等级
     };
-
-    vector <food_data> food_storage;//食物储存
+	vector <food_information> food_data;//食物数据
+    vector <food_instance> food_storage_warehouse;//食物储存
     vector <attire_data> attire_storage;//装束储存
 
     during_university() {
@@ -85,21 +86,15 @@ public:
         days = 1;
         clock = 8;
         groschen = 100;
-        food_storage.push_back({
-            "黑面包",
+        food_data.push_back({
+             "黑面包",
             FOOD,
             "制作粗糙的面包,口感不佳,勉强能填饱肚子,是布拉格街头上最常见和最廉价的食物之一",
             "你掰下一块，硬得像瓦片。放进嘴里嚼了半天，麦壳的粗粝感刮着舌头，酸涩里带点坚果味",
-            0,2,
             20,5,0,100
-            });
-        food_storage.push_back({
-            "咸猪肉",
-            FOOD,
-            "腌制,风干过的猪肉条，表面发黄，饿的时候看起来真的很诱人，嗯而且便于储存",
-            "嗯你咬下一口，又咸又腻，但是能给你一种属于穷人的满足感",
-            0,2,
-            15,20,10,80
+        });
+        food_storage_warehouse.push_back({
+            100,2,0
         });
     }
 
