@@ -12,7 +12,7 @@ public:
     int turn_number;                    //回合数
     int days;                           //天数
     int clock;                          //时间
-    int i_input1;
+    int i_input1;      
     int i_input2;
     char c_input;
     int groschen;                       //钱
@@ -21,10 +21,14 @@ public:
     struct player_attribute {
         int satiety_value;              //饱腹值
         int mood;                       //心情
+		int Learning_efficiency;        //学习效率
+		int achievement;                //成就
         int health;                     //健康
+		int charm;                      //魅力
         int academic;                   //学识
-        int finance;                    //财政
-        int Military;                   //军事
+		int logic;                      //逻辑
+		int eloquence;                  //口才
+		int make_skill;                 //制作技能
     } pla_a;
 
     struct npc_attribute {
@@ -49,27 +53,28 @@ public:
         ItemType type;                  //物品类型
         string description;             //描述文字
         string after_use;               //食用感受
-        int bag_quantity;              //背包数量
+        int bag_quantity;               //背包数量
         int warehouse_quantity;         //行李箱数量
         int satiety_gain;               //饱腹获得
         int mood_gain;                  //心情获得
         int health_gain;                //健康获得
         int shelf_life;                 //剩余保质期
     };
-
     //装束
     struct attire_data {
         string name;                    //物品名称
         ItemType type;                  //物品类型
         string description;             //描述文字
+		int bag_quantity;               //背包数量
+		int warehouse_quantity;         //行李箱数量
+        int 
     };
     //制作
     struct CraftingRecipe {
         string result_name;             // 做出来的东西叫啥
         vector<string> mat_names;       // 需要哪些材料
         vector<int> mat_counts;         // 每种要几个
-        int required_skill;             // 需要什么技能等级
-        string skill_type;              // "streetwise" 或 "logic" 等
+		int skill_required;             // 需要的制作技能等级
     };
 
     vector <food_data> food_storage;//食物储存
