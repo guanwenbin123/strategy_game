@@ -161,7 +161,7 @@ public:
                 cout << "请输入 " << min << "~" << max << " 之间的数字: ";
                 continue;
             }
-            return input;  // ✅ 合法返回
+            return input; 
         }
     }
     //主界面
