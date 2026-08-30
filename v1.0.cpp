@@ -12,7 +12,7 @@ public:
     int turn_number;                    //回合数
     int days;                           //天数
     int clock;                          //时间
-    int i_input1;      
+    int i_input1;
     int i_input2;
     char c_input;
     int groschen;                       //钱
@@ -21,14 +21,14 @@ public:
     struct player_attribute {
         int satiety_value;              //饱腹值
         int mood;                       //心情
-		int Learning_efficiency;        //学习效率
-		int achievement;                //成就
+        int Learning_efficiency;        //学习效率
+        int achievement;                //成就
         int health;                     //健康
-		int charm;                      //魅力
+        int charm;                      //魅力
         int academic;                   //学识
-		int logic;                      //逻辑
-		int eloquence;                  //口才
-		int make_skill;                 //制作技能
+        int logic;                      //逻辑
+        int eloquence;                  //口才
+        int make_skill;                 //制作技能
     } pla_a;
 
     struct npc_attribute {
@@ -56,13 +56,11 @@ public:
         int satiety_gain;               //饱腹获得
         int mood_gain;                  //心情获得
         int health_gain;                //健康获得
-        int fresh_time;                 //总新鲜时间
-    };
-    //实例
-    struct food_instance {
-        int remaining_fresh_time;     //剩余新鲜时间
-        int quantity;                 //数量
-		int Item;                     //具体物品索引
+		int warehouse_quantity;		    //仓库数量
+		int bag_quantity;               //背包数量
+		vector<int> warehouse_shelf_life;//仓库保质期
+		vector<int> bag_shelf_life;     //背包保质期
+		int shelf_life;                 //总保质期
     };
     //装束
     struct attire_data {
@@ -75,10 +73,9 @@ public:
         string result_name;             // 做出来的东西叫啥
         vector<string> mat_names;       // 需要哪些材料
         vector<int> mat_counts;         // 每种要几个
-		int skill_required;             // 需要的制作技能等级
+        int skill_required;             // 需要的制作技能等级
     };
-	vector <food_information> food_data;//食物数据
-    vector <food_instance> food_storage_warehouse;//食物储存
+    vector <food_information> food_storage;//食物储存
     vector <attire_data> attire_storage;//装束储存
 
     during_university() {
@@ -86,18 +83,23 @@ public:
         days = 1;
         clock = 8;
         groschen = 100;
-        food_data.push_back({
-             "黑面包",
-            FOOD,
-            "制作粗糙的面包,口感不佳,勉强能填饱肚子,是布拉格街头上最常见和最廉价的食物之一",
-            "你掰下一块，硬得像瓦片。放进嘴里嚼了半天，麦壳的粗粝感刮着舌头，酸涩里带点坚果味",
-            20,5,0,100
-        });
-        food_storage_warehouse.push_back({
-            100,2,0
-        });
-    }
 
+        food_information black_bread;
+        black_bread.name = "黑面包";
+        black_bread.type = FOOD;
+        black_bread.description = "制作粗糙的面包,口感不佳,能填饱肚子,是布拉格街头上最常见和最廉价的食物之一";
+        black_bread.after_use = "你掰下一块，硬得像瓦片。放进嘴里嚼了半天，麦壳的粗粝感刮着舌头，酸涩里带点坚果味";
+        black_bread.satiety_gain = 20;
+        black_bread.mood_gain = 5;
+        black_bread.health_gain = 0;
+        black_bread.warehouse_quantity = 2;
+        black_bread.bag_quantity = 0;
+        black_bread.shelf_life = 100;
+        black_bread.warehouse_shelf_life.push_back(100);
+        black_bread.warehouse_shelf_life.push_back(100);
+
+        food_storage.push_back(black_bread);
+    }
     // 游戏开场剧情
     void Opening_scene() {
         type_text("1436年秋，波西米亚。");
@@ -129,7 +131,7 @@ public:
             cin >> i_input1;
             if (i_input1 == 1)break;
         }
-		warehouse();
+        warehouse();
     }
     //等待函数
     void wait_key() {
@@ -188,10 +190,10 @@ public:
         cout << "[A.食物]" << endl;
         cout << endl << "请按下你要查看的物品序号种类:";
         cin >> c_input;
-		system("cls");
+        system("cls");
         //显示物品
         if (c_input == 'A' || c_input == 'a') {
-			cout << "====================食物==================" << endl;
+            cout << "====================食物==================" << endl;
             for (i = 0; i < food_storage.size(); i++) {
                 if (food_storage[i].warehouse_quantity != 0) {
                     lookup_f[a] = i;
@@ -208,8 +210,17 @@ public:
             cout << "=========================================" << endl;
             cout << "名称:" << food_storage[lookup_f[i_input1]].name << endl;
             cout << "数量:" << food_storage[lookup_f[i_input1]].warehouse_quantity << endl;
-            cout << food_storage[lookup_f[i_input1]].shelf_life << "回合后腐坏" << endl;
+			cout << "类型:食物" << endl;
+			cout << "饱腹获得:" << food_storage[lookup_f[i_input1]].satiety_gain << endl;
+			cout << "心情获得:" << food_storage[lookup_f[i_input1]].mood_gain << endl;
+			cout << "健康获得:" << food_storage[lookup_f[i_input1]].health_gain << endl;
+			cout << "总新鲜时间:" << food_storage[lookup_f[i_input1]].shelf_life << endl;
+			cout << "每个的新鲜时间:" << endl;
+            for(int i=0;i<food_storage[lookup_f[i_input1]].warehouse_shelf_life.size();i++){
+                cout << "第" << i+1 << "个:" << food_storage[lookup_f[i_input1]].warehouse_shelf_life[i] << endl;
+			}
             cout << food_storage[lookup_f[i_input1]].description << endl;
+            cout << "==========================================" << endl;
             cout << "(1.取到背包) (2.食用 ) (3.丢弃)" << endl;
             cin >> i_input2;
             cout << i_input2 << endl;
@@ -221,6 +232,7 @@ public:
                 case 1:
                     food_storage[lookup_f[i_input1]].warehouse_quantity--;
                     food_storage[lookup_f[i_input1]].bag_quantity++;
+					food_storage[lookup_f[i_input1]].bag_shelf_life.push_back(food_storage[lookup_f[i_input1]].warehouse_shelf_life.back());
                     cout << "已取到背包" << endl;
                     break;
                     //食用
@@ -230,24 +242,26 @@ public:
                     pla_a.health += food_storage[lookup_f[i_input1]].health_gain;
                     food_storage[lookup_f[i_input1]].warehouse_quantity--;
                     wait_key();
-					type_text(food_storage[lookup_f[i_input1]].after_use);
+                    type_text(food_storage[lookup_f[i_input1]].after_use);
                     cout << "目前总饱腹:" << pla_a.satiety_value << endl;
                     cout << "目前总心情:" << pla_a.mood << endl;
                     cout << "目前总健康:" << pla_a.health << endl;
+					food_storage[lookup_f[i_input1]].warehouse_shelf_life.pop_back();
                     break;
                     //丢弃
                 case 3:
                     food_storage[lookup_f[i_input1]].warehouse_quantity--;
+					food_storage[lookup_f[i_input1]].warehouse_shelf_life.pop_back();
                     break;
                     cout << "已丢弃一个" << endl;
                 }
-            } 
-                cout << "" << endl;
+            }
+            cout << "" << endl;
         }
     }
 };
 int main() {
     during_university game1;
-	game1.Opening_scene();
+    game1.Opening_scene();
     return 0;
 }
