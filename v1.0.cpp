@@ -127,8 +127,68 @@ public:
         wait_key();
 
         type_text("按1打开行李,这里就是你的仓库,你可以在这里存放或者拿取东西");
-		get_input(1, 1);
-        warehouse();
+        map <int, int> lookup_f;//查看物品映射
+        int a = 1, i = 0;
+        system("cls");
+        cout << "===============================1.行李===============================" << endl;
+        cout << "===============================2.背包===============================" << endl;
+		cout << "按1打开仓库菜单，你可以在这里使用，丢弃，物品，或者存入背包" << endl;
+        i_input1 = get_input(1, 1);
+        if (i_input1 == 1) {
+            system("cls");
+            cout << "===============================行李===============================" << endl;
+            cout << "[1.食物][2.药剂][3.书籍][4.装束][5.工具][6.值钱的东西][7.杂物][8.材料]" << endl;
+			cout << "上面是你仓库里的物品种类，你可以按下对应的数字查看物品，现在按1查看食物" << endl;
+            i_input1 = get_input(1, 1);
+            system("cls");
+            //显示物品
+            if (i_input1 == 1) {
+                cout << "===============================食物===============================" << endl;
+                for (i = 0; i < food_storage.size(); i++) {
+                    if (food_storage[i].warehouse_quantity != 0) {
+                        lookup_f[a] = i;
+                        cout << "[" << a << "." << food_storage[i].name << "×" << food_storage[i].warehouse_quantity << "]";
+                        a++;
+                    }
+                }
+				cout << "这里显示了你仓库里的食物，你可以按下对应的数字查看物品详情，现在按下1查看面包" << endl;
+                i_input1 = get_input(1, a - 1);
+                cout << i_input1 << endl;
+                //物品详情
+                system("cls");
+                cout << "==============================================================" << endl;
+                cout << "名称:" << food_storage[lookup_f[i_input1]].name << endl;
+                cout << "数量:" << food_storage[lookup_f[i_input1]].warehouse_quantity << endl;
+                cout << "类型:食物" << endl;
+                cout << "饱腹获得:" << food_storage[lookup_f[i_input1]].satiety_gain << endl;
+                cout << "心情获得:" << food_storage[lookup_f[i_input1]].mood_gain << endl;
+                cout << "健康获得:" << food_storage[lookup_f[i_input1]].health_gain << endl;
+                cout << "总新鲜时间:" << food_storage[lookup_f[i_input1]].shelf_life << endl;
+                cout << "每个的新鲜时间:" << endl;
+                for (int i = 0; i < food_storage[lookup_f[i_input1]].warehouse_shelf_life.size(); i++) {
+                    cout << "第" << i + 1 << "个:" << food_storage[lookup_f[i_input1]].warehouse_shelf_life[i] << endl;
+                }
+                cout << food_storage[lookup_f[i_input1]].description << endl;
+                cout << "==============================================================" << endl;
+				cout << "这里是你查看的物品详情，你可以选择取到背包，食用，或者丢弃，现在按下2食用" << endl;
+                cout << "(1.取到背包) (2.食用 ) (3.丢弃)" << endl;
+                cin >> i_input2;
+                cout << i_input2 << endl;
+                //对物品的操作
+                if (food_storage[lookup_f[i_input1]].warehouse_quantity > 0) {
+                    switch (i_input2) {
+                        //取到背包
+                    case 1:
+                        food_storage[lookup_f[i_input1]].warehouse_quantity--;
+                        food_storage[lookup_f[i_input1]].bag_quantity++;
+                        food_storage[lookup_f[i_input1]].bag_shelf_life.push_back(food_storage[lookup_f[i_input1]].warehouse_shelf_life.back());
+                        cout << "已取到背包" << endl;
+                        break;
+                        //食用
+                    }
+                }
+            }
+        }
     }
     //等待函数
     void wait_key() {
@@ -161,7 +221,7 @@ public:
                 cout << "请输入 " << min << "~" << max << " 之间的数字: ";
                 continue;
             }
-            return input; 
+            return input;  
         }
     }
     //主界面
