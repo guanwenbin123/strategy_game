@@ -42,7 +42,7 @@ public:
         BOOK,                            // 书籍
         ATTIRE,                          // 装束
         TOOL,                            // 工具
-        VALUABLE,                        // 值钱的东西
+        VALUABLE,                        // 宝物
         MISC,                            // 杂物
         MATERIAL                         // 材料
     };
@@ -56,17 +56,20 @@ public:
         int satiety_gain;               //饱腹获得
         int mood_gain;                  //心情获得
         int health_gain;                //健康获得
-		int warehouse_quantity;		    //仓库数量
-		int bag_quantity;               //背包数量
-		vector<int> warehouse_shelf_life;//仓库保质期
-		vector<int> bag_shelf_life;     //背包保质期
-		int shelf_life;                 //总保质期
+        int warehouse_quantity;		    //仓库数量
+        int bag_quantity;               //背包数量
+        vector<int> warehouse_shelf_life;//仓库保质期
+        vector<int> bag_shelf_life;     //背包保质期
+        int shelf_life;                 //总保质期
     };
     //装束
     struct attire_information {
         string name;                    //物品名称
         ItemType type;                  //物品类型
         string description;             //描述文字
+		int durability;                 //耐久度
+		int Learning_efficiency_gain;   //学习效率加成
+
     };
     //制作
     struct CraftingRecipe {
@@ -112,9 +115,9 @@ public:
         type_text("但他向西吉斯蒙德国王交出的那笔赎金，几乎掏空了城堡下的每一个钱袋。");
         wait_key();
 
-        type_text("你的母亲来自米兰，一个意大利贵族之女。童年时她带你躲进布拉格，");
-        type_text("用带着托斯卡纳口音的拉丁语教你读书写字。");
-        type_text("三天前她回了符尔卡诺夫城堡，临走时只说了一句：\"别让你父亲失望\"");
+        type_text("你的母亲来自米兰，一个意大利贵族之女。用带着托斯卡纳口音的拉丁语教你读书写字。");
+        type_text("你长大了，你的母亲送你来到布拉格查理大学读书");
+        type_text("昨天前她回了符尔卡诺夫城堡，临走时只说了一句：\"别让你父亲失望\"");
         wait_key();
 
         type_text("如今，里潘战役的尸骨已经凉了，塔博尔派退守南方，西吉斯蒙德坐在布拉格的王座上。");
@@ -132,13 +135,13 @@ public:
         system("cls");
         cout << "===============================1.行李===============================" << endl;
         cout << "===============================2.背包===============================" << endl;
-		cout << "按1打开仓库菜单，你可以在这里使用，丢弃，物品，或者存入背包" << endl;
+        cout << "按1打开仓库菜单，你可以在这里使用，丢弃，物品，或者存入背包" << endl;
         i_input1 = get_input(1, 1);
         if (i_input1 == 1) {
             system("cls");
             cout << "===============================行李===============================" << endl;
             cout << "[1.食物][2.药剂][3.书籍][4.装束][5.工具][6.值钱的东西][7.杂物][8.材料]" << endl;
-			cout << "上面是你仓库里的物品种类，你可以按下对应的数字查看物品，现在按1查看食物" << endl;
+            cout << "上面是你仓库里的物品种类，你可以按下对应的数字查看物品，现在按1查看食物" << endl;
             i_input1 = get_input(1, 1);
             system("cls");
             //显示物品
@@ -151,7 +154,7 @@ public:
                         a++;
                     }
                 }
-				cout << "这里显示了你仓库里的食物，你可以按下对应的数字查看物品详情，现在按下1查看面包" << endl;
+                cout << "这里显示了你仓库里的食物，你可以按下对应的数字查看物品详情，现在按下1查看面包" << endl;
                 i_input1 = get_input(1, a - 1);
                 cout << i_input1 << endl;
                 //物品详情
@@ -170,21 +173,25 @@ public:
                 }
                 cout << food_storage[lookup_f[i_input1]].description << endl;
                 cout << "==============================================================" << endl;
-				cout << "这里是你查看的物品详情，你可以选择取到背包，食用，或者丢弃，现在按下2食用" << endl;
+                cout << "这里是你查看的物品详情，你可以选择取到背包，食用，或者丢弃，现在按下2食用" << endl;
                 cout << "(1.取到背包) (2.食用 ) (3.丢弃)" << endl;
-                cin >> i_input2;
+                i_input2  = get_input(2,2);
                 cout << i_input2 << endl;
                 //对物品的操作
                 if (food_storage[lookup_f[i_input1]].warehouse_quantity > 0) {
                     switch (i_input2) {
-                        //取到背包
-                    case 1:
+                    case 2:
+                        pla_a.satiety_value += food_storage[lookup_f[i_input1]].satiety_gain;
+                        pla_a.mood += food_storage[lookup_f[i_input1]].mood_gain;
+                        pla_a.health += food_storage[lookup_f[i_input1]].health_gain;
                         food_storage[lookup_f[i_input1]].warehouse_quantity--;
-                        food_storage[lookup_f[i_input1]].bag_quantity++;
-                        food_storage[lookup_f[i_input1]].bag_shelf_life.push_back(food_storage[lookup_f[i_input1]].warehouse_shelf_life.back());
-                        cout << "已取到背包" << endl;
+                        wait_key();
+                        type_text(food_storage[lookup_f[i_input1]].after_use);
+                        cout << "目前总饱腹:" << pla_a.satiety_value << endl;
+                        cout << "目前总心情:" << pla_a.mood << endl;
+                        cout << "目前总健康:" << pla_a.health << endl;
+                        food_storage[lookup_f[i_input1]].warehouse_shelf_life.pop_back();
                         break;
-                        //食用
                     }
                 }
             }
@@ -206,7 +213,7 @@ public:
         }
         cout << endl;
     }
-	// 输入验证函数
+    // 输入验证函数
     int get_input(int min, int max) {
         int input;
         while (true) {
@@ -221,7 +228,7 @@ public:
                 cout << "请输入 " << min << "~" << max << " 之间的数字: ";
                 continue;
             }
-            return input;  
+            return input;
         }
     }
     //主界面
@@ -262,16 +269,16 @@ public:
         cout << "===============================1.行李===============================" << endl;
         cout << "===============================2.背包===============================" << endl;
         cout << "请输入你要打开的：" << endl;
-        i_input1 = get_input(1,2);
+        i_input1 = get_input(1, 2);
         if (i_input1 == 1) {
             system("cls");
             cout << "===============================行李===============================" << endl;
             cout << "[1.食物][2.药剂][3.书籍][4.装束][5.工具][6.值钱的东西][7.杂物][8.材料]" << endl;
             cout << endl << "请按下你要查看的物品序号种类:";
-			i_input1 = get_input(1,8);
+            i_input1 = get_input(1, 8);
             system("cls");
             //显示物品
-            if (i_input1 ==  1){ 
+            if (i_input1 == 1) {
                 cout << "===============================食物===============================" << endl;
                 for (i = 0; i < food_storage.size(); i++) {
                     if (food_storage[i].warehouse_quantity != 0) {
@@ -281,7 +288,7 @@ public:
                     }
                 }
                 cout << endl << "请选择你要查看的物品:";
-				i_input1 = get_input(1, a - 1);
+                i_input1 = get_input(1, a - 1);
                 cout << i_input1 << endl;
                 //物品详情
                 system("cls");
@@ -334,13 +341,14 @@ public:
                     }
                 }
             }
-        } else {
+        }
+        else {
             if (i_input1 == 2) {
                 system("cls");
                 cout << "===============================背包===============================" << endl;
                 cout << "[1.食物][2.药剂][3.书籍][4.装束][5.工具][6.值钱的东西][7.杂物][8.材料]" << endl;
                 cout << endl << "请按下你要查看的物品序号种类:";
-				i_input1 = get_input(1, 8);
+                i_input1 = get_input(1, 8);
                 system("cls");
                 //显示物品
                 if (i_input1 == 1) {
@@ -353,7 +361,7 @@ public:
                         }
                     }
                     cout << endl << "请选择你要查看的物品:";
-					i_input1 = get_input(1, a - 1);
+                    i_input1 = get_input(1, a - 1);
                     cout << i_input1 << endl;
                     //物品详情
                     system("cls");
@@ -372,7 +380,7 @@ public:
                     cout << food_storage[lookup_f[i_input1]].description << endl;
                     cout << "==============================================================" << endl;
                     cout << "(1.取到背包) (2.食用 ) (3.丢弃)" << endl;
-					i_input2 = get_input(1, 3);
+                    i_input2 = get_input(1, 3);
                     cout << i_input2 << endl;
                     //对物品的操作
                     if (food_storage[lookup_f[i_input1]].bag_quantity > 0) {
