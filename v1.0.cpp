@@ -5,6 +5,10 @@
 #include <conio.h>
 #include <vector>
 #include <map>
+#include <algorithm>
+#include <stack>
+#include <functional>
+
 using namespace std;
 
 class during_university {
@@ -67,8 +71,8 @@ public:
         string name;                    //物品名称
         ItemType type;                  //物品类型
         string description;             //描述文字
-		int durability;                 //耐久度
-		int Learning_efficiency_gain;   //学习效率加成
+        int durability;                 //耐久度
+        int Learning_efficiency_gain;   //学习效率加成
 
     };
     //制作
@@ -78,10 +82,16 @@ public:
         vector<int> mat_counts;         // 每种要几个
         int skill_required;             // 需要的制作技能等级
     };
+
     vector <food_information> food_storage;//食物储存
     vector <attire_information> attire_storage;//装束储存
+    
+	stack <int> action_stack; //操作栈
+    map<int, function<void()>> actions;
+
 
     during_university() {
+
         turn_number = 1;
         days = 1;
         clock = 8;
@@ -100,8 +110,10 @@ public:
         black_bread.shelf_life = 100;
         black_bread.warehouse_shelf_life.push_back(100);
         black_bread.warehouse_shelf_life.push_back(100);
-
         food_storage.push_back(black_bread);
+
+		actions[0] = main_interface;
+        actions[1] = warehouse;
     }
     // 游戏开场剧情
     void Opening_scene() {
@@ -175,7 +187,7 @@ public:
                 cout << "==============================================================" << endl;
                 cout << "这里是你查看的物品详情，你可以选择取到背包，食用，或者丢弃，现在按下2食用" << endl;
                 cout << "(1.取到背包) (2.食用 ) (3.丢弃)" << endl;
-                i_input2  = get_input(2,2);
+                i_input2 = get_input(2, 2);
                 cout << i_input2 << endl;
                 //对物品的操作
                 if (food_storage[lookup_f[i_input1]].warehouse_quantity > 0) {
@@ -231,8 +243,11 @@ public:
             return input;
         }
     }
+	
+
     //主界面
     void main_interface() {
+		action_stack.push(0);
         cout << "==================主界面=================" << endl;
         cout << "现在是第" << days << "天" << endl;
         cout << "第" << clock << "小时" << endl;
@@ -263,7 +278,9 @@ public:
 
     //仓库函数
     void warehouse() {
+		action_stack.push(1);
         map <int, int> lookup_f;//查看物品映射
+		action_stack.push(1);
         int a = 1, i = 0;
         system("cls");
         cout << "===============================1.行李===============================" << endl;
@@ -340,6 +357,13 @@ public:
                         cout << "已丢弃一个" << endl;
                     }
                 }
+            }
+			cout << "1.回到背包菜单" << endl;
+			cout << "2.回到主界面" << endl;
+			i_input1 = get_input(1, 2);
+            if (i_input1 == 1) {
+				action_stack.pop();
+                actions[action_stack.top];
             }
         }
         else {
