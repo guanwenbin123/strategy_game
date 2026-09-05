@@ -106,6 +106,11 @@ public:
         black_bread.warehouse_shelf_life.push_back(100);
         black_bread.warehouse_shelf_life.push_back(100);
         food_storage.push_back(black_bread);
+
+		attire_information student_robe;
+		student_robe.name = "学生长袍";
+		student_robe.type = ATTIRE;
+		student_robe.description = "布拉格查理大学的学生长袍，学生的表致，穿上它你就能在学校里自由活动,而且可以帮助你专心读书！";
     }
     // 游戏开场剧情
     void Opening_scene() {
@@ -202,9 +207,19 @@ public:
         }
 		cout << "现在按1回到仓库菜单" << endl;
 		i_input1 = get_input(1, 1);
+        system("cls");
+        cout << "===============================1.行李===============================" << endl;
+        cout << "===============================2.背包===============================" << endl;
+        cout << "现在按1打开仓库菜单" << endl;
+        i_input1 = get_input(1, 1);
         if (i_input1 == 1) {
-            warehouse();
-		}
+            system("cls");
+            cout << "===============================行李===============================" << endl;
+            cout << "[1.食物][2.药剂][3.书籍][4.装束][5.工具][6.值钱的东西][7.杂物][8.材料]" << endl;
+            cout << "现在按6查看值钱的东西" << endl;
+            i_input1 = get_input(6,6);
+            system("cls");
+            //显示物品
     }
     //等待函数
     void wait_key() {
