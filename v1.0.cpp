@@ -6,8 +6,6 @@
 #include <vector>
 #include <map>
 #include <algorithm>
-#include <stack>
-#include <functional>
 
 using namespace std;
 
@@ -85,9 +83,6 @@ public:
 
     vector <food_information> food_storage;//食物储存
     vector <attire_information> attire_storage;//装束储存
-    
-	stack <int> action_stack; //操作栈
-    map<int, function<void()>> actions;
 
 
     during_university() {
@@ -111,9 +106,6 @@ public:
         black_bread.warehouse_shelf_life.push_back(100);
         black_bread.warehouse_shelf_life.push_back(100);
         food_storage.push_back(black_bread);
-
-		actions[0] = main_interface;
-        actions[1] = warehouse;
     }
     // 游戏开场剧情
     void Opening_scene() {
@@ -208,6 +200,11 @@ public:
                 }
             }
         }
+		cout << "现在按1回到仓库菜单" << endl;
+		i_input1 = get_input(1, 1);
+        if (i_input1 == 1) {
+            warehouse();
+		}
     }
     //等待函数
     void wait_key() {
@@ -243,11 +240,10 @@ public:
             return input;
         }
     }
-	
+
 
     //主界面
     void main_interface() {
-		action_stack.push(0);
         cout << "==================主界面=================" << endl;
         cout << "现在是第" << days << "天" << endl;
         cout << "第" << clock << "小时" << endl;
@@ -278,9 +274,7 @@ public:
 
     //仓库函数
     void warehouse() {
-		action_stack.push(1);
         map <int, int> lookup_f;//查看物品映射
-		action_stack.push(1);
         int a = 1, i = 0;
         system("cls");
         cout << "===============================1.行李===============================" << endl;
@@ -358,13 +352,15 @@ public:
                     }
                 }
             }
-			cout << "1.回到背包菜单" << endl;
-			cout << "2.回到主界面" << endl;
-			i_input1 = get_input(1, 2);
+            cout << "1.回到背包菜单" << endl;
+            cout << "2.回到主界面" << endl;
+            i_input1 = get_input(1, 2);
             if (i_input1 == 1) {
-				action_stack.pop();
-                actions[action_stack.top];
+                warehouse();
             }
+            else if (i_input1 == 2) {
+                main_interface();
+			}
         }
         else {
             if (i_input1 == 2) {
