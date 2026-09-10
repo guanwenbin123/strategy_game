@@ -58,7 +58,7 @@ public:
         int satiety_gain;               //饱腹获得
         int mood_gain;                  //心情获得
         int health_gain;                //健康获得
-        int warehouse_quantity;		    //仓库数量
+        int warehouse_quantity;		 //仓库数量
         int bag_quantity;               //背包数量
         vector<int> warehouse_shelf_life;//仓库保质期
         vector<int> bag_shelf_life;     //背包保质期
@@ -71,7 +71,7 @@ public:
         string description;             //描述文字
         int durability;                 //耐久度
         int Learning_efficiency_gain;   //学习效率加成
-
+        int charm_gain;                 //魅力加成
     };
     //制作
     struct CraftingRecipe {
@@ -111,6 +111,8 @@ public:
 		student_robe.name = "学生长袍";
 		student_robe.type = ATTIRE;
 		student_robe.description = "布拉格查理大学的学生长袍，学生的表致，穿上它你就能在学校里自由活动,而且可以帮助你专心读书！";
+        student_robe.charm_gain = 10;
+        
     }
     // 游戏开场剧情
     void Opening_scene() {
